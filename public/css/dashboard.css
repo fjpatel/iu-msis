@@ -22,6 +22,10 @@ section .ban {
   font-weight: bold;
 }
 
+#duedate {
+  background-color: lightgreen;
+}
+
 
 /** table sort **/
 th[role=columnheader]:not(.no-sort) {
