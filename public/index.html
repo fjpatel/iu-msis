@@ -45,11 +45,11 @@
     <div class="row"> <!--start row 2 -->
       <section class="col" style="height:200px">
         <h2>Spent</h2>
-        <div class="ban">{{spent}}</div>
+        <div class="ban">{{pretty_currency(spent)}}</div>
         <h2>Budget</h2>
-        <div class="ban">{{budget}}</div>
+        <div class="ban">{{pretty_currency(budget)}}</div>
         <h2>Projected Spend</h2>
-        <div class="ban">{{projected_spend}}</div>
+        <div class="ban">{{pretty_currency(projected_spend)}}</div>
       </section>
       <div class="col placeholder">
         Burndown Chart goes here.

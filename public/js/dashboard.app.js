@@ -54,6 +54,15 @@ var dashboardApp = new Vue({
             console.log('FETCH ERROR:');
             console.log(err);
           });
+        },
+        fetchData() {
+          fetch('https://raw.githubusercontent.com/tag/iu-msis/dev/public/project1.json')
+          .then(response => response.json())
+          .then(json => {dashboardApp.tasks =json;})
+          .catch(function(err) {
+            console.log('FETCH ERROR:');
+            console.log(err);
+          });
         }
 
       }, //ends methods
