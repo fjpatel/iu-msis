@@ -44,6 +44,10 @@ var dashboardApp = new Vue({
           if (val < 1e6) {return '$' + (val/1e3).toFixed(1) + 'k';}
           return '$' + (val/1e6).toFixed(1) + 'M';
         },
+        completedClass: function(task){
+          if (task.perc_complete == 100) {return 'alert-success';}
+          if (task.current_sprint && task.hours_worked == 0) {return 'alert-warning';}
+        },
         fetchTasks() {
           fetch('https://raw.githubusercontent.com/tag/iu-msis/dev/public/p1-tasks.json')
           .then(response => response.json())

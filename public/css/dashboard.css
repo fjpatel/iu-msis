@@ -26,6 +26,14 @@ section .ban {
   magin-top: 0;
 }
 
+#taskTable > tbody > tr {
+  border-left: 15px solid #ccc;
+}
+
+#taskTable > tbody > tr.current_sprint {
+  border-left: 15px solid rgb(35,95,163);
+}
+
 #duedate {
   background-color: lightgreen;
 }
