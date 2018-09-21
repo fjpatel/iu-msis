@@ -2,7 +2,7 @@ var dashboardApp = new Vue({
   el: '#dashboard',
   data: {
       "name" : "Project Name!",
-      "short_description": "Build a visualization layer for the project dashboard",
+      "short_description": "A project dashboard in process!",
       "start_date" : "2018-07-01",
       "target_date" : "2018-11-03",
       "budget" : "4950000",
@@ -67,6 +67,9 @@ var dashboardApp = new Vue({
             console.log('FETCH ERROR:');
             console.log(err);
           });
+        },
+        gotoTask(tid) {
+          window.location = 'task.html?taskId=' + tid;
         }
 
       }, //ends methods

@@ -1,6 +1,8 @@
 .placeholder {
   background-color: rgb(200,200,255);
   border: 2px solid rgb(50,50,100);
+  border-radius: 5px;
+  margin: 5px;
 }
 
 section {
@@ -28,14 +30,22 @@ section .ban {
 
 #taskTable > tbody > tr {
   border-left: 15px solid #ccc;
+  cursor: pointer;
 }
 
-#taskTable > tbody > tr.current_sprint {
+#taskTable > tbody > tr.current-sprint {
   border-left: 15px solid rgb(35,95,163);
 }
 
 #duedate {
-  background-color: lightgreen;
+  background-color: pink;
+  border: 2px solid rgb(50,50,100);
+  border-radius: 5px;
+}
+
+#spent {
+  border: 2px solid rgb(50,50,100);
+  border-radius: 5px;
 }
 
 
