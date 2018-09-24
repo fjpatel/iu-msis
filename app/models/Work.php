@@ -14,6 +14,9 @@ class Work {
 
   public static function getWorkByTask(int $taskId){
     // 1. Connect to Database
+    $db = new PDO (DB_SERVER, DB_USER, DB_PW);
+    var_dump($db);
+    die;
     // 2. Run a query
     // 3. Read the results
     // 4. FOr each row, make a new work object
