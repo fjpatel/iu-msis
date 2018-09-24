@@ -1,40 +1,18 @@
 <?php
 
-echo "foo\n";
-echo 'bar';
+require '../../app/commmon.php';
 
-$name = 'Phil';
+$taskId = intval($_GET['taskId'] ?? 0);
 
-//echo "\n";
-echo "My name is {$name}\n";
-echo "My name is " .$name;  //period means concate in php
-
-class Animal
-{
-  public $type = 'Pig';
+if ($taskId < 1) {
+  throw new Exception('Invalid Task ID');
 }
 
-$wilbur = new Animal ();
-echo $wilbur->type;
+// 1. Go to the database and get all work associated with the $taskId
+$workArr = Work::getWorkByTask($taskId);
 
-if (true) {
-} else {
-}
+// 2. Convert to JSON
+$json = json_encode($workArr);
 
-for ($i = 0; $i<10; $i++) {
-  //stuff
-}
-
-$id = isset($_GET['id']) ? $_GET['id'] : 0;
-
-$id = $_GET['id'] ?? 0;
-
-$arr1 = [   //associated array
-  'first' => 'Tom',
-  'last' => 'Gregory'
-];
-
-$arr2 = [ 'one', 'two', 'three']
-
-
-//file:///Users/fjpatel/Desktop/iu-msis/public/api/work.php
+// 3. Print
+echo $json;
