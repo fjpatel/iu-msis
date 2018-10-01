@@ -4,10 +4,10 @@ var dashboardApp = new Vue({
       "name" : "Project Name!",
       "short_description": "A project dashboard in process!",
       "start_date" : "2018-07-01",
-      "target_date" : "2018-11-03",
-      "budget" : "4950000",
-      "spent" : "3456700",
-      "projected_spend": "4740500",
+      "target_date" : "",
+      "budget" : "",
+      "spent" : "",
+      "projected_spend": "",
       "weekly_effort_target": 400,
       tasks: [
         {
