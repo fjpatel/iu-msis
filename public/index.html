@@ -11,7 +11,9 @@
 
     <title>Project Dashboard</title>
   </head>
+
   <body>
+
     <div id="dashboard" class="container-fluid">
     <h1>{{name}}</h1>
 
@@ -72,10 +74,8 @@
             <th> Assigned Team</th>
             <th> Status </th>
             <th> Started </th>
-            <th> Finished </th>
             <th> Hours </th>
             <th> % Complete </th>
-            <th> Current Sprint? </th>
         </tr>
         </thead>
         <tbody>
@@ -90,10 +90,8 @@
             <td> {{task.team}}</td>
             <td> {{task.status}}</td>
             <td> {{task.start_date}}</td>
-            <td> {{task.close_date}} </td>
             <td> {{task.hours_worked}} </td>
             <td :class="completedClass(task)"> {{task.perc_complete}} </td>
-            <td> {{task.current_sprint}}</td>
           </tr>
         </tbody>
       </table>
@@ -115,6 +113,12 @@
   <script src="js/tablesort.min.js"></script>
   <script>
   // Tablesort plugin from http://tristen.ca/tablesort/demo/
+  Tablesort.extend('tshirt', function(item) {
+    return /^X?S|M|X?L|2XL$/.test(item);
+  }, function (a, b) {
+    var sizes = ['XS', 'S', 'M', 'L', 'XL', '2XL'];
+    return sizes.indexOf(b) - sizes.indexOf(a);
+  });
   new Tablesort(document.getElementById('taskTable'));
   </script>
 

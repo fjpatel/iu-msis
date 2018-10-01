@@ -1,11 +1,11 @@
 <?php
-class Teams{
+class Team{
   public $team_id;
   public $name;
   public $hourly_rate;
 
   public function __construct($data) {
-    $this->team_id = intval($data['id']);
+    $this->team_id = intval($data['team_id']);
     $this->name = $data['name'];
     $this->hourly_rate = floatval($data['hourly_rate']);
   }
@@ -17,15 +17,13 @@ class Teams{
     $sql = 'SELECT * FROM Teams';
     $statement = $db->prepare($sql);
     // 3. Run the query
-    $success = $statement->execute(
-        [$taskId]
-    );
+    $success = $statement->execute();
     // 4. Handle the results
     $arr = [];
     while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
       // 4.a. For each row, make a new work object
-      $teamItem =  new Team($row);
-      array_push($arr, $workItem);
+      $theTeam =  new Team($row);
+      array_push($arr, $theTeam;
     }
     // 4.b. return the array of work objects
     return $arr;

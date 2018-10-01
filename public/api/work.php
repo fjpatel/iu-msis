@@ -2,7 +2,12 @@
 
 require '../../app/commmon.php';
 
+if ($_SEVER['REQUEST_METHOD'] == 'POST') {
+  require 'workPost.php';
+  exit;
+}
 
+//if GET
 $taskId = intval($_GET['taskId'] ?? 0);
 
 if ($taskId < 1) {
@@ -10,7 +15,7 @@ if ($taskId < 1) {
 }
 
 // 1. Go to the database and get all work associated with the $taskId
-$workArr = Work::getWorkByTask($taskId);
+$workArr = Work::getWorkByTaskId($taskId);
 
 // 2. Convert to JSON
 $json = json_encode($workArr, JSON_PRETTY_PRINT);

@@ -9,7 +9,7 @@ require '../../app/commmon.php';
 //}
 
 // 1. Go to the database and get all work associated with the $taskId
-$teams = Team:getAll();
+$teams = Team::getAll();
 
 // 2. Convert to JSON
 $json = json_encode($teams);
