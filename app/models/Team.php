@@ -4,11 +4,17 @@ class Teams{
   public $name;
   public $hourly_rate;
 
+  public function __construct($data) {
+    $this->team_id = intval($data['id']);
+    $this->name = $data['name'];
+    $this->hourly_rate = floatval($data['hourly_rate']);
+  }
+
   public static function getAll() {
     // 1. Connect to the database
     $db = new PDO(DB_SERVER, DB_USER, DB_PW);
     // 2. Prepare the query
-    $sql = 'SELECT * FROM Team';
+    $sql = 'SELECT * FROM Teams';
     $statement = $db->prepare($sql);
     // 3. Run the query
     $success = $statement->execute(
