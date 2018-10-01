@@ -1,6 +1,6 @@
 <?php
 
-require '../../app/commmon.php';
+require '../../app/common.php';
 
 if ($_SEVER['REQUEST_METHOD'] == 'POST') {
   require 'workPost.php';
