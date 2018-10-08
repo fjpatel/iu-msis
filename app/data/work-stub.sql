@@ -26,6 +26,23 @@ VALUES (3, 'MS Why S', 80);
 INSERT INTO Teams (id, name, hourly_rate)
 VALUES (4, 'Luke\'s Parents', 90);
 
+CREATE TRIGGER sumWorkToTask
+AFTER INSERT ON Work
+FOR EACH ROW
+	UPDATE Tasks
+	SET
+		 hours_worked = hours_worked + NEW.hours,
+		 perc_complete = IF(
+       NEW.start_date = (
+         SELECT MAX (start_date)
+         FROM Work
+         WHERE task_id = NEW.task_id
+       ),
+       NEW.completion_estimate,
+       perc_complete
+     )
+     WHERE id = NEW.task_id;
+
 INSERT INTO Work (id, team_id, task_id, start_date, hours, completion_estimate)
 VALUES (1, 2, 1, '2018-07-29 08:30', 3, 10);
 INSERT INTO Work (id, team_id, task_id, start_date, hours, completion_estimate)
