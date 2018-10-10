@@ -28,6 +28,10 @@ section .ban {
   magin-top: 0;
 }
 
+#taskFilter {
+  margin-top: 18px;
+}
+
 #taskTable > tbody > tr {
   border-left: 15px solid #ccc;
   cursor: pointer;

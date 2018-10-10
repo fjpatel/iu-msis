@@ -9,7 +9,8 @@ class WorkHoursReport
             FROM Work, Tasks
             WHERE Work.task_id = Tasks.id
               AND Tasks.project_id = ?
-            GROUP BY DATE(start_date)';
+            GROUP BY DATE(start_date)
+            ORDER BY date';
     $statement = $db->prepare($sql);
     // 3. Run the query
     $success = $statement->execute(
