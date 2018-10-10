@@ -44,20 +44,21 @@ var dashboardApp = new Vue({
     }
   },
   methods: {
+
     pretty_date: function (d) {
       return moment(d).format('l')
     },
+
     pretty_currency: function (val) {
       if (val < 1e3) {
         return '$ ' + val
       }
-
       if (val < 1e6) {
         return '$ ' + (val/1e3).toFixed(1) + ' k'
       }
-
       return '$ ' + (val/1e6).toFixed(1) + ' M'
     },
+
     completeClass: function(task) {
       if (task.perc_complete == 100 ) {
         return 'alert-success'
@@ -66,8 +67,9 @@ var dashboardApp = new Vue({
         return 'alert-warning'
       }
     },
+
     fetchTasks (pid) {
-      fetch('https://raw.githubusercontent.com/tag/iu-msis/dev/app/data/p1-tasks.json' ) //api/tasks.php?projectId='+pid)
+      fetch('https://raw.githubusercontent.com/tag/iu-msis/dev/app/data/p1-tasks.json' )
       .then( response => response.json() )
       .then( json => {dashboardApp.tasks = json} )
       .catch( err => {
@@ -75,6 +77,7 @@ var dashboardApp = new Vue({
         console.log(err);
       })
     },
+
     fetchProject (pid) {
       fetch('https://raw.githubusercontent.com/tag/iu-msis/dev/app/data/project1.json')
       .then( response => response.json() )
@@ -84,16 +87,13 @@ var dashboardApp = new Vue({
         console.log(err);
       })
     },
+
     fetchProjectHours (pid) {
       fetch('api/workHours.php?projectId='+pid)
       .then( response => response.json() )
       .then( json => {
-        // Clean the data?
-
-        // Update Vue model
         dashboardApp.workHours = json;
-
-        // Now that the data has been returned, we can build a chart with it:
+        //this.formatWorkData()
         dashboardApp.buildWorkHoursChart();
       })
       .catch( err => {
@@ -101,37 +101,21 @@ var dashboardApp = new Vue({
         console.log(err);
       })
     },
+
     gotoTask (tid) {
-      // alert ('Clicked: ' + tid)
       window.location = 'task.html?taskId=' + tid;
     },
+
     buildWorkHoursChart () {
       console.log('Build chart here');
-
-      /**
-        Data currently looks like
-        [
-          {date: '2018-08-01', 'hours':3},
-          {date: '2018-08-02', 'hours':5},
-          ...
-        ]
-        But needs to look like
-        [
-          [ <JS Date object>, 3],
-          [ <JS Date object>, 5],
-          ...
-        ]
-      **/
       this.workHours.forEach( (entry, index, arr) => {
         entry.hours = Number(entry.hours);
         entry.runningTotalHours = entry.hours + (index > 0 ? arr[index-1].runningTotalHours: 0);
       });
-
       var transformedData = this.workHours.map(
-        entry => [Date.parse(entry.date), entry.runningTotalHours] // Have to convert the types!
+        entry => [Date.parse(entry.date), entry.runningTotalHours]
       );
       console.log(transformedData);
-
       var myChart = Highcharts.chart('chartEffort', {
         title: {
             text: 'Cumulative Effort'
@@ -153,9 +137,9 @@ var dashboardApp = new Vue({
                 data: transformedData
             }]
     });
-
     }
   },
+
   created () {
     const url = new URL(window.location.href);
     this.projectId = url.searchParams.get('projectId');
@@ -168,4 +152,5 @@ var dashboardApp = new Vue({
     this.fetchTasks(this.projectId);
     this.fetchProjectHours(this.projectId);
   }
+
 })
