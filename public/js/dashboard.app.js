@@ -25,24 +25,15 @@ var dashboardApp = new Vue({
         perc_complete: '',
         current_sprint : ''
       }
-    ],
-    filter: {
-      showOpenClose: 'all',
-      current_sprint_only: false
-    }
+    ]
   },
+
   computed: {
     days_left: function () {
       return moment(this.project.target_date).diff(moment(), 'days')
-    },
-    filteredTasks () {
-      return this.tasks.filter(t =>
-        (this.filter.showOpenClose === 'open' && !t.close_date) ||
-        (this.filter.showOpenClose === 'closed' && t.close_date) ||
-        this.filter.showOpenClose === 'all'
-      )
     }
   },
+
   methods: {
 
     pretty_date: function (d) {
@@ -53,9 +44,11 @@ var dashboardApp = new Vue({
       if (val < 1e3) {
         return '$ ' + val
       }
+
       if (val < 1e6) {
         return '$ ' + (val/1e3).toFixed(1) + ' k'
       }
+
       return '$ ' + (val/1e6).toFixed(1) + ' M'
     },
 
@@ -69,8 +62,9 @@ var dashboardApp = new Vue({
     },
 
     fetchTasks (pid) {
-      fetch('https://raw.githubusercontent.com/tag/iu-msis/dev/app/data/p1-tasks.json' )
+      fetch('https://raw.githubusercontent.com/tag/iu-msis/dev/app/data/p1-tasks.json')
       .then( response => response.json() )
+      // ^ This is the same as .then( function(response) {return response.json()} )
       .then( json => {dashboardApp.tasks = json} )
       .catch( err => {
         console.log('TASK FETCH ERROR:');
@@ -81,76 +75,110 @@ var dashboardApp = new Vue({
     fetchProject (pid) {
       fetch('https://raw.githubusercontent.com/tag/iu-msis/dev/app/data/project1.json')
       .then( response => response.json() )
-      .then( json => {dashboardApp.project = json})
+      .then( json => {dashboardApp.project = json} )
       .catch( err => {
         console.log('PROJECT FETCH ERROR:');
         console.log(err);
       })
     },
 
-    fetchProjectHours (pid) {
+    fetchProjectWork (pid) {
       fetch('api/workHours.php?projectId='+pid)
-      .then( response => response.json() )
+      .then( response => response.json() )  // "a => expression" is shorthand function declaration
       .then( json => {
-        dashboardApp.workHours = json;
-        //this.formatWorkData()
-        dashboardApp.buildWorkHoursChart();
-      })
+        dashboardApp.workHours = json; //after we get back json we need to clean it up so we format the hours and build the chart
+        this.formatWorkHours();
+        this.buildEffortChart();
+      } )
       .catch( err => {
-        console.log('PROJECT HOURS FETCH ERROR:');
+        console.log('PROJECT WORK FETCH ERROR:');
         console.log(err);
       })
     },
 
-    gotoTask (tid) {
-      window.location = 'task.html?taskId=' + tid;
+    formatWorkHours() { //an array of things
+      this.workHours.forEach(
+        (entry, index, arr) => {
+          entry.date = Date.parse(entry.date); // Convert to ms since Jan 1, 1970 UTC
+          entry.hours = Number(entry.hours);
+          entry.runningTotalHours = entry.hours +
+            (index == 0 ? 0 : arr[index-1].runningTotalHours)
+      });
+
+      // DEBUG: Make sure the data is how we want it:
+      console.log(this.workHours);
     },
 
-    buildWorkHoursChart () {
-      console.log('Build chart here');
-      this.workHours.forEach( (entry, index, arr) => {
-        entry.hours = Number(entry.hours);
-        entry.runningTotalHours = entry.hours + (index > 0 ? arr[index-1].runningTotalHours: 0);
-      });
-      var transformedData = this.workHours.map(
-        entry => [Date.parse(entry.date), entry.runningTotalHours]
-      );
-      console.log(transformedData);
-      var myChart = Highcharts.chart('chartEffort', {
-        title: {
-            text: 'Cumulative Effort'
-        },
-        xAxis: {
-            type: 'datetime'
-        },
-        yAxis: {
+    buildEffortChart() {
+      Highcharts.chart('effortChart', {
             title: {
-                text: 'Hours'
-            }
-        },
-        legend: {
+                text: 'Cumulative Project Effort'
+            },
+            xAxis: {
+                type: 'datetime'
+            },
+            yAxis: {
+                title: {
+                    text: 'Hours'
+                }
+            },
+            legend: {
                 enabled: false
             },
-        series: [{
+            plotOptions: {
+                area: {
+                    fillColor: {
+                        linearGradient: {
+                            x1: 0,
+                            y1: 0,
+                            x2: 0,
+                            y2: 1
+                        },
+                        stops: [
+                            [0, Highcharts.getOptions().colors[0]],
+                            [1, Highcharts.Color(Highcharts.getOptions().colors[0]).setOpacity(0).get('rgba')]
+                        ]
+                    },
+                    marker: {
+                        radius: 2
+                    },
+                    lineWidth: 1,
+                    states: {
+                        hover: {
+                            lineWidth: 1
+                        }
+                    },
+                    threshold: null
+                }
+            },
+
+            series: [{
                 type: 'area',
-                name: 'Total hours',
-                data: transformedData
+                name: 'Hours (Running Total)',
+                // Data needs [ [date, num], [date2, num2 ], ... ]
+                data: this.workHours.map( item => [item.date, item.runningTotalHours] ) //map returns array of all results
             }]
-    });
+        });
+    },
+
+    gotoTask(tid) {
+      window.location = 'task.html?taskId=' + tid;
     }
+
   },
-
   created () {
+    // Get URL Param, projectId
     const url = new URL(window.location.href);
-    this.projectId = url.searchParams.get('projectId');
+    const projectId = url.searchParams.get('projectId') || 0;
 
-    if (!this.projectId) {
-      console.error('Project Id not found in URL parameter.');
+    if (!projectId) {
+      console.error('Project Id not defined in URL parameters.')
     }
 
-    this.fetchProject(this.projectId);
-    this.fetchTasks(this.projectId);
-    this.fetchProjectHours(this.projectId);
+    this.project.id = projectId;
+    this.fetchProject(projectId);
+    this.fetchTasks(projectId);
+    this.fetchProjectWork(projectId);
+    this.buildEffortChart();
   }
-
 })
